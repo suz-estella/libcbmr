@@ -1,38 +1,59 @@
+
+#' get_cbm_exn_parameters_dir
+#'
+#' Gets a path to a directory containing default parameters for `libcbm.cbm_exn.cbm_exn_model`
+#'
+#' @export
+get_cbm_exn_parameters_dir <- function() {
+  box::use(reticulate[reticulate_import = import])
+  libcbm_resources <- reticulate_import("libcbm.resources")
+  libcbm_resources$get_cbm_exn_parameters_dir()
+}
+
+#' get_cbm_defaults_path
+#'
+#' Gets the path to the packaged cbm defaults sqlite database
+#'
+#' @export
+get_cbm_defaults_path <- function() {
+  box::use(reticulate[reticulate_import = import])
+  libcbm_resources <- reticulate_import("libcbm.resources")
+  libcbm_resources$get_cbm_defaults_path()
+}
+
 #' Get the default parameters bundled with libcbm for running the cbm_exn
 #' package
+#'
+#' @param cbm_exn_dir Path to a directory containing default parameters for `libcbm.cbm_exn.cbm_exn_model`
 #' @export
-cbm_exn_get_default_parameters <- function() {
-  box::use(reticulate[reticulate_import = import, dict])
+cbm_exn_get_default_parameters <- function(cbm_exn_dir = NULL) {
+  box::use(reticulate[dict])
   box::use(utils[read.csv])
-  cbm_exn_parameters <- reticulate_import(
-    "libcbm.model.cbm_exn.cbm_exn_parameters"
-  )
-  libcbm_resources <- reticulate_import("libcbm.resources")
-  param_path <- libcbm_resources$get_cbm_exn_parameters_dir()
+  if (is.null(cbm_exn_dir)) cbm_exn_dir <- get_cbm_exn_parameters_dir()
 
   params <- dict(
     # TODO: need a solution for loading json that works correctly
     # for pools and flux configs
     slow_mixing_rate = read.csv(
-      file.path(param_path, "slow_mixing_rate.csv")
+      file.path(cbm_exn_dir, "slow_mixing_rate.csv")
     ),
     turnover_parameters = read.csv(
-      file.path(param_path, "turnover_parameters.csv")
+      file.path(cbm_exn_dir, "turnover_parameters.csv")
     ),
     species = read.csv(
-      file.path(param_path, "species.csv")
+      file.path(cbm_exn_dir, "species.csv")
     ),
     root_parameters = read.csv(
-      file.path(param_path, "root_parameters.csv")
+      file.path(cbm_exn_dir, "root_parameters.csv")
     ),
     decay_parameters = read.csv(
-      file.path(param_path, "decay_parameters.csv")
+      file.path(cbm_exn_dir, "decay_parameters.csv")
     ),
     disturbance_matrix_value = read.csv(
-      file.path(param_path, "disturbance_matrix_value.csv")
+      file.path(cbm_exn_dir, "disturbance_matrix_value.csv")
     ),
     disturbance_matrix_association = read.csv(
-      file.path(param_path, "disturbance_matrix_association.csv")
+      file.path(cbm_exn_dir, "disturbance_matrix_association.csv")
     )
   )
 
@@ -43,9 +64,11 @@ cbm_exn_get_default_parameters <- function() {
 #'
 #' @param spinup_input a dictionary of spinup_parameters, spinup_increments
 #' @param parameters named list of default parameters for model initialization
+#' @param cbm_exn_dir Path to a directory containing default parameters for `libcbm.cbm_exn.cbm_exn_model`
 #' @export
-cbm_exn_spinup_ops <- function(spinup_input, parameters) {
+cbm_exn_spinup_ops <- function(spinup_input, parameters, cbm_exn_dir = NULL) {
   box::use(reticulate[reticulate_import = import])
+  if (is.null(cbm_exn_dir)) cbm_exn_dir <- get_cbm_exn_parameters_dir()
   cbm_exn_spinup <- reticulate_import("libcbm.model.cbm_exn.cbm_exn_spinup")
   cbm_exn_parameters <- reticulate_import(
     "libcbm.model.cbm_exn.cbm_exn_parameters"
@@ -53,9 +76,8 @@ cbm_exn_spinup_ops <- function(spinup_input, parameters) {
   model_variables <- reticulate_import(
     "libcbm.model.model_definition.model_variables"
   )
-  libcbm_resources <- reticulate_import("libcbm.resources")
   param_object <- cbm_exn_parameters$parameters_factory(
-    dir = libcbm_resources$get_cbm_exn_parameters_dir(),
+    dir  = cbm_exn_dir,
     data = parameters
   )
   spinup_ops <- cbm_exn_spinup$get_default_ops(
@@ -87,6 +109,7 @@ cbm_exn_get_spinup_op_sequence <- function() {
 #' @param spinup_debug_output_dir optional path which defaults to NULL.
 #' If specified, the path is used to write debugging CSV files with full
 #' model state and variable details about spinup timesteps.
+#' @param cbm_exn_dir Path to a directory containing default parameters for `libcbm.cbm_exn.cbm_exn_model`
 #' @returns cbm_vars - a collection of simulation state and variables for
 #' time-stepping with subsequent cbm processes
 #' @export
@@ -95,18 +118,19 @@ cbm_exn_spinup <- function(
   spinup_ops,
   spinup_op_list,
   parameters,
-  spinup_debug_output_dir = NULL
+  spinup_debug_output_dir = NULL,
+  cbm_exn_dir = NULL
 ) {
 
   box::use(utils[write.csv])
   box::use(reticulate[reticulate_import = import, `%as%`])
+  if (is.null(cbm_exn_dir)) cbm_exn_dir <- get_cbm_exn_parameters_dir()
+
   # import python packages
   cbm_exn_model <- reticulate_import("libcbm.model.cbm_exn.cbm_exn_model")
-  libcbm_resources <- reticulate_import("libcbm.resources")
   model_variables <- reticulate_import(
     "libcbm.model.model_definition.model_variables"
   )
-
   output_processor <- reticulate_import(
     "libcbm.model.model_definition.output_processor"
   )
@@ -114,13 +138,14 @@ cbm_exn_spinup <- function(
     "libcbm.model.cbm_exn.cbm_exn_parameters"
   )
   param_object <- cbm_exn_parameters$parameters_factory(
-    dir = libcbm_resources$get_cbm_exn_parameters_dir(),
+    dir  = cbm_exn_dir,
     data = parameters
   )
   do_spinup_debug <- !is.null(spinup_debug_output_dir)
 
   with(cbm_exn_model$initialize(
-    parameters, include_spinup_debug = do_spinup_debug
+    parameters, include_spinup_debug = do_spinup_debug,
+    config_path = cbm_exn_dir
   ) %as% cbm, {
 
     cbm_vars <- cbm$spinup(
@@ -175,20 +200,21 @@ cbm_exn_get_step_disturbance_ops_sequence <- function() {
 #' @param parameters named list of default parameters. For
 #' default value see the `cbm_exn_get_default_parameters`
 #' function.
+#' @param cbm_exn_dir Path to a directory containing default parameters for `libcbm.cbm_exn.cbm_exn_model`
 #' @return list - list of structured matrix operations
 #' @export
-cbm_exn_step_ops <- function(cbm_vars, parameters) {
+cbm_exn_step_ops <- function(cbm_vars, parameters, cbm_exn_dir = NULL) {
 
   box::use(reticulate[reticulate_import = import, `%as%`])
+  if (is.null(cbm_exn_dir)) cbm_exn_dir <- get_cbm_exn_parameters_dir()
   cbm_exn_parameters <- reticulate_import(
     "libcbm.model.cbm_exn.cbm_exn_parameters"
   )
   model_variables <- reticulate_import(
     "libcbm.model.model_definition.model_variables"
   )
-  libcbm_resources <- reticulate_import("libcbm.resources")
   param_object <- cbm_exn_parameters$parameters_factory(
-    dir = libcbm_resources$get_cbm_exn_parameters_dir(),
+    dir  = cbm_exn_dir,
     data = parameters
   )
   cbm_exn_step <- reticulate_import("libcbm.model.cbm_exn.cbm_exn_step")
@@ -212,19 +238,21 @@ cbm_exn_step_ops <- function(cbm_vars, parameters) {
 #' values in the specified `operations`
 #' @param parameters named list of default parameter for model
 #' initialization
+#' @param cbm_exn_dir Path to a directory containing default parameters for `libcbm.cbm_exn.cbm_exn_model`
 #' @export
 cbm_exn_step <- function(
   cbm_vars,
   operations,
   disturbance_op_sequence,
   step_op_sequence,
-  parameters
+  parameters,
+  cbm_exn_dir = NULL
 ) {
   box::use(reticulate[reticulate_import = import, `%as%`])
 
   # import python packages
   cbm_exn_model <- reticulate_import("libcbm.model.cbm_exn.cbm_exn_model")
-  with(cbm_exn_model$initialize(parameters = parameters) %as% cbm, {
+  with(cbm_exn_model$initialize(parameters = parameters, config_path = cbm_exn_dir) %as% cbm, {
     cbm_vars <- cbm$step(
       cbm_vars, operations, disturbance_op_sequence, step_op_sequence
     )

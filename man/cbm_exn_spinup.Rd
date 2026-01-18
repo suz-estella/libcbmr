@@ -10,7 +10,8 @@ cbm_exn_spinup(
   spinup_ops,
   spinup_op_list,
   parameters,
-  spinup_debug_output_dir = NULL
+  spinup_debug_output_dir = NULL,
+  cbm_exn_dir = NULL
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ cbm_exn_spinup(
 \item{spinup_debug_output_dir}{optional path which defaults to NULL.
 If specified, the path is used to write debugging CSV files with full
 model state and variable details about spinup timesteps.}
+
+\item{cbm_exn_dir}{Path to a directory containing default parameters for \code{libcbm.cbm_exn.cbm_exn_model}}
 }
 \value{
 cbm_vars - a collection of simulation state and variables for

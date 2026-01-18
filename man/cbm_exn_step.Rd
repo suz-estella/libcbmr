@@ -9,7 +9,8 @@ cbm_exn_step(
   operations,
   disturbance_op_sequence,
   step_op_sequence,
-  parameters
+  parameters,
+  cbm_exn_dir = NULL
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ values in the specified \code{operations}}
 
 \item{parameters}{named list of default parameter for model
 initialization}
+
+\item{cbm_exn_dir}{Path to a directory containing default parameters for \code{libcbm.cbm_exn.cbm_exn_model}}
 }
 \description{
 Run all C dynamics for one timestep

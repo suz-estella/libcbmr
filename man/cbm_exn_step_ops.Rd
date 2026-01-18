@@ -4,7 +4,7 @@
 \alias{cbm_exn_step_ops}
 \title{Get the default matrix operations for cbm_exn stepping as a list of matrices}
 \usage{
-cbm_exn_step_ops(cbm_vars, parameters)
+cbm_exn_step_ops(cbm_vars, parameters, cbm_exn_dir = NULL)
 }
 \arguments{
 \item{cbm_vars}{named list of dataframes containing
@@ -14,6 +14,8 @@ default operations}
 \item{parameters}{named list of default parameters. For
 default value see the \code{cbm_exn_get_default_parameters}
 function.}
+
+\item{cbm_exn_dir}{Path to a directory containing default parameters for \code{libcbm.cbm_exn.cbm_exn_model}}
 }
 \value{
 list - list of structured matrix operations

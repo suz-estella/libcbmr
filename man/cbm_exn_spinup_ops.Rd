@@ -4,12 +4,14 @@
 \alias{cbm_exn_spinup_ops}
 \title{Get the default spinup ops}
 \usage{
-cbm_exn_spinup_ops(spinup_input, parameters)
+cbm_exn_spinup_ops(spinup_input, parameters, cbm_exn_dir = NULL)
 }
 \arguments{
 \item{spinup_input}{a dictionary of spinup_parameters, spinup_increments}
 
 \item{parameters}{named list of default parameters for model initialization}
+
+\item{cbm_exn_dir}{Path to a directory containing default parameters for \code{libcbm.cbm_exn.cbm_exn_model}}
 }
 \description{
 Get the default spinup ops

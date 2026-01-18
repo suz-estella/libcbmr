@@ -5,7 +5,10 @@
 \title{Get the default parameters bundled with libcbm for running the cbm_exn
 package}
 \usage{
-cbm_exn_get_default_parameters()
+cbm_exn_get_default_parameters(cbm_exn_dir = NULL)
+}
+\arguments{
+\item{cbm_exn_dir}{Path to a directory containing default parameters for \code{libcbm.cbm_exn.cbm_exn_model}}
 }
 \description{
 Get the default parameters bundled with libcbm for running the cbm_exn
