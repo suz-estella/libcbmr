@@ -1,11 +1,10 @@
-#' Interface to the Carbon Budget Model Library Based on CBM-CFS3
+#' libcbmr
 #'
-#' DESCRIPTION NEEDED
+#' Interface to the Carbon Budget Model Library Based on CBM-CFS3.
 #'
-#' @docType package
+#' @keywords internal
 #' @import reticulate
-#' @name libcbmr
-NULL
+"_PACKAGE"
 
 #.globals <- new.env(parent = emptyenv())
 # .globals$libcbm <- NULL
