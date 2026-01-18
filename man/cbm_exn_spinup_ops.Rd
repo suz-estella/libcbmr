@@ -6,6 +6,11 @@
 \usage{
 cbm_exn_spinup_ops(spinup_input, parameters)
 }
+\arguments{
+\item{spinup_input}{a dictionary of spinup_parameters, spinup_increments}
+
+\item{parameters}{named list of default parameters for model initialization}
+}
 \description{
 Get the default spinup ops
 }

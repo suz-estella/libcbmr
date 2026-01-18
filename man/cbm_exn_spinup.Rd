@@ -21,7 +21,7 @@ cbm_exn_spinup(
 \item{spinup_op_list}{list of operation names to apply in spinup stepping
 (references spinup ops)}
 
-\item{parameters}{named list of default parameters for model initilization}
+\item{parameters}{named list of default parameters for model initialization}
 
 \item{spinup_debug_output_dir}{optional path which defaults to NULL.
 If specified, the path is used to write debugging CSV files with full

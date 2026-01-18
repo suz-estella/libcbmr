@@ -40,6 +40,9 @@ cbm_exn_get_default_parameters <- function() {
 }
 
 #' Get the default spinup ops
+#'
+#' @param spinup_input a dictionary of spinup_parameters, spinup_increments
+#' @param parameters named list of default parameters for model initialization
 #' @export
 cbm_exn_spinup_ops <- function(spinup_input, parameters) {
   box::use(reticulate[reticulate_import = import])
@@ -80,7 +83,7 @@ cbm_exn_get_spinup_op_sequence <- function() {
 #' @param spinup_ops the formatted matrix operations to apply
 #' @param spinup_op_list list of operation names to apply in spinup stepping
 #' (references spinup ops)
-#' @param parameters named list of default parameters for model initilization
+#' @param parameters named list of default parameters for model initialization
 #' @param spinup_debug_output_dir optional path which defaults to NULL.
 #' If specified, the path is used to write debugging CSV files with full
 #' model state and variable details about spinup timesteps.
